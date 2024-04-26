@@ -11,7 +11,7 @@ import {
 @Controller('categorias')
 export class CategoriasController {
   @Get()
-  getCompradores(): string {
+  getCategorias(): string {
     return 'Lista de categorias';
   }
   @Get(':id')
@@ -26,7 +26,7 @@ export class CategoriasController {
     };
   }
   @Put(':idCategoria')
-  updateComprador(
+  updateCategoria(
     @Param('idCategoria') idCategoria: string,
     @Body() body: any,
   ): any {

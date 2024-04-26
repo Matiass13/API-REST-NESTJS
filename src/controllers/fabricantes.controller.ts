@@ -11,7 +11,7 @@ import {
 @Controller('fabricantes')
 export class FabricantesController {
   @Get()
-  getCompradores(): string {
+  getFabricantes(): string {
     return 'Lista de fabricantes';
   }
   @Get(':id')
@@ -26,7 +26,7 @@ export class FabricantesController {
     };
   }
   @Put(':idFabricante')
-  updateComprador(
+  updateFabricante(
     @Param('idFabricante') idFabricante: string,
     @Body() body: any,
   ): any {

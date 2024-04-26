@@ -11,7 +11,7 @@ import {
 @Controller('pedidos')
 export class PedidosController {
   @Get()
-  getCompradores(): string {
+  getPedidos(): string {
     return 'Lista de pedidos';
   }
   @Get(':id')
@@ -26,7 +26,7 @@ export class PedidosController {
     };
   }
   @Put(':idPedido')
-  updateComprador(@Param('idPedido') idPedido: string): any {
+  updatePedido(@Param('idPedido') idPedido: string): any {
     return {
       idPedido: idPedido,
     };
