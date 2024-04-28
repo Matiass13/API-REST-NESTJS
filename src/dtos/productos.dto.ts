@@ -34,5 +34,5 @@ export class CreateProductDTO {
   readonly imagen: string;
 }
 export class UpdateProductDTO extends PartialType(
-  OmitType(CreateProductDTO, ['nombre']),
+  OmitType(CreateProductDTO, []),
 ) {}

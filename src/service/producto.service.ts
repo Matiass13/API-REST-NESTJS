@@ -36,15 +36,19 @@ export class ProductoService {
     return newProduct;
   }
   update(id: number, payload: UpdateProductDTO) {
-    const product = this.findOne(id);
-    if (!product) {
-      throw new NotFoundException(`El producto con id: #${id} no existe`);
+    let product = this.findOne(id);
+    if (product) {
+      const index = this.productos.findIndex((item) => item === product);
+      if (index !== -1) {
+        product = {
+          ...product,
+          ...payload,
+        };
+        console.log(product);
+        this.productos[index] = product;
+        return product;
+      }
     }
-    const newProduct = {
-      ...product,
-      ...payload,
-    };
-    return newProduct;
   }
 
   delete(id: number) {

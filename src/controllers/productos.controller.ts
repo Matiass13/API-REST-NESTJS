@@ -11,6 +11,7 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
+import { CreateProductDTO, UpdateProductDTO } from 'src/dtos/productos.dto';
 import { ProductoService } from 'src/service/producto.service';
 
 @Controller('productos')
@@ -30,11 +31,14 @@ export class ProductosController {
     return this.productsService.findOne(idProduct);
   }
   @Post()
-  create(@Body() payload: any) {
+  create(@Body() payload: CreateProductDTO) {
     return this.productsService.create(payload);
   }
   @Put(':idProduct')
-  updateProduct(@Param('idProduct') idProduct: string, @Body() payload: any) {
+  updateProduct(
+    @Param('idProduct') idProduct: string,
+    @Body() payload: UpdateProductDTO,
+  ) {
     return this.productsService.update(+idProduct, payload);
   }
   @Delete(':idProducto')
