@@ -11,17 +11,20 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { CreateProductDTO, UpdateProductDTO } from 'src/dtos/productos.dto';
-import { ProductoService } from 'src/service/producto.service';
+import { CreateProductDTO, UpdateProductDTO } from '../dtos/productos.dto';
+import { ProductoService } from 'src/productos/services/producto.service';
 
 @Controller('productos')
 export class ProductosController {
   constructor(private productsService: ProductoService) {}
   @Get()
   getProducts(
-    @Query('limit') limit = 100,
-    @Query('offset') offset = 0,
-    @Query('brand') brand = '',
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    @Query('limit') _limit = 100,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    @Query('offset') _offset = 0,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    @Query('brand') _brand = '',
   ) {
     return this.productsService.findAll();
   }

@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateProductDTO, UpdateProductDTO } from 'src/dtos/productos.dto';
-import { Producto } from 'src/entities/producto.entity';
+import { CreateProductDTO, UpdateProductDTO } from '../dtos/productos.dto';
+import { Producto } from 'src/productos/entities/producto.entity';
 
 @Injectable()
 export class ProductoService {
@@ -44,7 +44,6 @@ export class ProductoService {
           ...product,
           ...payload,
         };
-        console.log(product);
         this.productos[index] = product;
         return product;
       }
@@ -53,8 +52,12 @@ export class ProductoService {
 
   delete(id: number) {
     const index = this.productos.findIndex((item) => item.id === id);
+    if (index === -1) {
+      throw new NotFoundException(`El producto con id: #${id} no existe`);
+    }
     if (index !== -1) {
       this.productos.splice(index, 1);
     }
+    return true;
   }
 }
