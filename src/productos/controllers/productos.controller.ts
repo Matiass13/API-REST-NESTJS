@@ -13,11 +13,14 @@ import {
 } from '@nestjs/common';
 import { CreateProductDTO, UpdateProductDTO } from '../dtos/productos.dto';
 import { ProductoService } from 'src/productos/services/producto.service';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Productos')
 @Controller('productos')
 export class ProductosController {
   constructor(private productsService: ProductoService) {}
   @Get()
+  @ApiOperation({ summary: 'Catalogo con todos los productos' })
   getProducts(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     @Query('limit') _limit = 100,

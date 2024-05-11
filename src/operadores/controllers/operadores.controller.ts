@@ -13,4 +13,8 @@ export class OperadoresController {
   getOrders(@Param('id', ParseIntPipe) id: number) {
     return this.operatorService.getOrderByUser(id);
   }
+  @Get('tasks') //
+  getTasks() {
+    return this.operatorService.getTasks();
+  }
 }

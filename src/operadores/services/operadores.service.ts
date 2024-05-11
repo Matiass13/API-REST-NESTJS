@@ -1,15 +1,17 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateOperatorDTO, UpdateOperatorDTO } from '../dtos/operadores.dto';
 import { Operador } from '../entites/operador.entity';
 import { ConfigService } from '@nestjs/config';
 import { ProductoService } from 'src/productos/services/producto.service';
 import { Pedido } from '../entites/pedido.entity';
+import { Client } from 'pg';
 
 @Injectable()
 export class OperadoresService {
   constructor(
     private productsService: ProductoService,
     private configService: ConfigService, // Inyección de dependencias de ConfigService
+    @Inject('PG') private clientPg: Client,
   ) {}
   private idCount = 1;
   private operadores: Operador[] = [
@@ -75,5 +77,15 @@ export class OperadoresService {
       operador,
       products: this.productsService.findAll(),
     };
+  }
+  getTasks() {
+    return new Promise((resolve, reject) => {
+      this.clientPg.query('SELECT * FROM tareas', (err, res) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(res.rows);
+      });
+    });
   }
 }
