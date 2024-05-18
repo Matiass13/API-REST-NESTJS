@@ -3,8 +3,9 @@ import { CreateOperatorDTO, UpdateOperatorDTO } from '../dtos/operadores.dto';
 import { Operador } from '../entites/operador.entity';
 import { ConfigService } from '@nestjs/config';
 import { ProductoService } from 'src/productos/services/producto.service';
-import { Pedido } from '../entites/pedido.entity';
 import { Client } from 'pg';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class OperadoresService {
@@ -12,6 +13,7 @@ export class OperadoresService {
     private productsService: ProductoService,
     private configService: ConfigService, // Inyección de dependencias de ConfigService
     @Inject('PG') private clientPg: Client,
+    @InjectRepository(Operador) private operadorRepo: Repository<Operador>,
   ) {}
   private idCount = 1;
   private operadores: Operador[] = [
@@ -23,59 +25,36 @@ export class OperadoresService {
     },
   ];
   findAll() {
-    const apiKey = this.configService.get('API_KEY'); // Asignacion de la variable de entorno a una constante
-    const dbName = this.configService.get('DATABASE_NAME'); // idem
-    console.log(apiKey, dbName);
-    return this.operadores;
+    return this.operadorRepo.find();
   }
   findOne(id: number) {
-    const operador = this.operadores.find((item) => item.id === id);
-    if (!operador) {
-      throw new NotFoundException(`El operador con id: #${id} no existe`);
+    const item = this.operadorRepo.findOneBy({ id });
+    if (!item) {
+      throw new NotFoundException(`Product #${id} not found`);
     }
-    return operador;
+    return item;
   }
-  create(payload: CreateOperatorDTO) {
-    this.idCount += 1;
-    const newOperador = {
-      id: this.idCount,
-      ...payload,
-    };
-    this.operadores.push(newOperador);
-    return newOperador;
-  }
-  update(id: number, payload: UpdateOperatorDTO) {
-    let operador = this.findOne(id);
-    if (operador) {
-      const index = this.operadores.findIndex((item) => item === operador);
-      if (index !== -1) {
-        operador = {
-          ...operador,
-          ...payload,
-        };
-        this.operadores[index] = operador;
-        return operador;
-      }
-    }
+  create(data: CreateOperatorDTO) {
+    const newProduct = this.operadorRepo.create(data);
+    return this.operadorRepo.save(newProduct);
   }
 
-  delete(id: number) {
-    const index = this.operadores.findIndex((item) => item.id === id);
-    if (index === -1) {
-      throw new NotFoundException(`El operador con id: #${id} no existe`);
-    }
-    if (index !== -1) {
-      this.operadores.splice(index, 1);
-    }
-    return true;
+  async update(id: number, changes: UpdateOperatorDTO) {
+    const item = await this.operadorRepo.findOneBy({ id });
+    this.operadorRepo.merge(item, changes);
+    return this.operadorRepo.save(item);
   }
 
-  getOrderByUser(id: number): Pedido {
-    const operador = this.findOne(id);
+  remove(id: number) {
+    return this.operadorRepo.delete(id);
+  }
+
+  async getOrderByUser(id: number) {
+    const user = this.findOne(id); // findOneBy({ id })
     return {
       date: new Date(),
-      operador,
-      products: this.productsService.findAll(),
+      user,
+      products: await this.productsService.findAll(),
     };
   }
   getTasks() {
