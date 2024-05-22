@@ -1,12 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import config from './config';
-import { Client } from 'pg';
+/* import { Client } from 'pg'; */
 
 @Injectable()
 export class AppService {
   constructor(
-    @Inject('PG') private clientPg: Client,
+    /* @Inject('PG') private clientPg: Client, */
     @Inject('APIKEY') private APIKEY: string,
     @Inject('TAREA_ASINC') private tarea: string,
     @Inject(config.KEY) private configService: ConfigType<typeof config>,
@@ -25,7 +25,7 @@ export class AppService {
     console.log(this.tarea);
     return 'realizando una tarea asinc de ejemplo';
   }
-  getTasks() {
+  /*   getTasks() {
     return new Promise((resolve, reject) => {
       this.clientPg.query('SELECT * FROM tareas', (err, res) => {
         if (err) {
@@ -34,5 +34,5 @@ export class AppService {
         resolve(res.rows);
       });
     });
-  }
+  } */
 }

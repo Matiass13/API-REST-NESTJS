@@ -1,14 +1,14 @@
 import { Global, Module } from '@nestjs/common';
-import { Client } from 'pg';
+/* import { Client } from 'pg'; */
 import { ConfigType } from '@nestjs/config';
 import config from '../config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-const client = new Client({
+/* const client = new Client({
   user: 'root',
   host: 'localhost',
   database: 'my_db',
-  password: '123456',
+  password: '',
   port: 5432,
 });
 
@@ -16,7 +16,7 @@ client.connect();
 client.query('SELECT * FROM tareas', (err, res) => {
   console.error(err);
   console.log(res.rows);
-});
+}); */
 @Global()
 @Module({
   imports: [
@@ -33,7 +33,7 @@ client.query('SELECT * FROM tareas', (err, res) => {
           username: user,
           password,
           database: dbName,
-          synchronize: true,
+          synchronize: false,
           autoLoadEntities: true,
         };
       },
@@ -44,7 +44,7 @@ client.query('SELECT * FROM tareas', (err, res) => {
       provide: 'APIKEY',
       useValue: process.env.NODE_ENV === 'prod',
     },
-    {
+    /* {
       provide: 'PG',
       useValue: client,
       useFactory: (configService: ConfigType<typeof config>) => {
@@ -60,8 +60,8 @@ client.query('SELECT * FROM tareas', (err, res) => {
         return client;
       },
       inject: [config.KEY],
-    },
+    }, */
   ],
-  exports: ['APIKEY', 'PG', TypeOrmModule],
+  exports: ['APIKEY' /* 'PG' */, TypeOrmModule],
 })
 export class DatabaseModule {}
