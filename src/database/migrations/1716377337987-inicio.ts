@@ -12,7 +12,6 @@ export class Inicio1716377337987 implements MigrationInterface {
     );
 
 
-
     await queryRunner.query(
 
       `ALTER TABLE "operador" ADD "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()`,

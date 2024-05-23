@@ -6,6 +6,8 @@ import { ProductoService } from 'src/productos/services/producto.service';
 /* import { Client } from 'pg'; */
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { CompradoresService } from './compradores.service';
+//import { Pedido } from '../entites/pedido.entity';
 
 @Injectable()
 export class OperadoresService {
@@ -14,6 +16,7 @@ export class OperadoresService {
     private configService: ConfigService, // Inyección de dependencias de ConfigService
     /* @Inject('PG') private clientPg: Client, */
     @InjectRepository(Operador) private operadorRepo: Repository<Operador>,
+    private compradorService: CompradoresService,
   ) {}
   /* private idCount = 1;
   private operadores: Operador[] = [
@@ -24,47 +27,43 @@ export class OperadoresService {
       role: 'role',
     },
   ]; */
-  findAll() {
-    return this.operadorRepo.find();
+  async findAll() {
+    return await this.operadorRepo.find({
+      relations: ['comprador'],
+    });
   }
-  findOne(id: number) {
-    const item = this.operadorRepo.findOneBy({ id });
+  async findOne(id: number) {
+    const item = await this.operadorRepo.findOneBy({ id });
     if (!item) {
-      throw new NotFoundException(`Product #${id} not found`);
+      throw new NotFoundException(`Item #${id} not found`);
     }
     return item;
   }
-  create(data: CreateOperatorDTO) {
-    const newProduct = this.operadorRepo.create(data);
-    return this.operadorRepo.save(newProduct);
+  async create(data: CreateOperatorDTO) {
+    const newItem = this.operadorRepo.create(data);
+    if (data.compradorId) {
+      const comprador = await this.compradorService.findOne(data.compradorId);
+      newItem.comprador = comprador;
+    }
+    return this.operadorRepo.save(newItem);
   }
 
   async update(id: number, changes: UpdateOperatorDTO) {
-    const item = await this.operadorRepo.findOneBy({ id });
-    this.operadorRepo.merge(item, changes);
-    return this.operadorRepo.save(item);
+    const item = await this.findOne(id);
+    const updOperad = this.operadorRepo.merge(item, changes);
+    return this.operadorRepo.save(updOperad);
   }
 
   remove(id: number) {
     return this.operadorRepo.delete(id);
   }
 
-  async getOrderByUser(id: number) {
-    const user = this.findOne(id); // findOneBy({ id })
+  /*  async getOrderByUser(id: number): Promise<Pedido> {
+    const operador = await this.findOne(id); // findOneBy({ id })
     return {
       date: new Date(),
-      user,
+      operador,
       products: await this.productsService.findAll(),
     };
-  }
-  /* getTasks() {
-    return new Promise((resolve, reject) => {
-      this.clientPg.query('SELECT * FROM tareas', (err, res) => {
-        if (err) {
-          reject(err);
-        }
-        resolve(res.rows);
-      });
-    });
   } */
 }
