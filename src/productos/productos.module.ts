@@ -7,15 +7,17 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Producto } from './entities/producto.entity';
 import { Fabricante } from './entities/fabricante.entity';
 import { FabricanteService } from './services/fabricante.service';
+import { CategoriaService } from './services/categoria.service';
+import { Categoria } from './entities/categoria.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Producto, Fabricante])],
+  imports: [TypeOrmModule.forFeature([Producto, Fabricante, Categoria])],
   controllers: [
     ProductosController,
     CategoriasController,
     FabricantesController,
   ],
-  providers: [ProductoService, FabricanteService],
+  providers: [ProductoService, FabricanteService, CategoriaService],
   exports: [ProductoService],
 })
 export class ProductosModule {}

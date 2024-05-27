@@ -4,43 +4,40 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Put,
 } from '@nestjs/common';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { CategoriaService } from '../services/categoria.service';
+import { CreateCategoriaDTO, UpdateCategoriaDTO } from '../dtos/categoria.dto';
 
+@ApiTags('Categorias')
 @Controller('categorias')
 export class CategoriasController {
+  constructor(private categoriasservice: CategoriaService) {}
   @Get()
-  getCategorias(): string {
-    return 'Lista de categorias';
+  @ApiOperation({ summary: 'Catalogo con todas las categorias' })
+  getCategorias() {
+    return this.categoriasservice.findAll();
   }
   @Get(':id')
-  getUserById(@Param('id') id: string) {
-    return 'Categoria with ID: ' + id;
+  getCatById(@Param('idCat', ParseIntPipe) idCat: number) {
+    return this.categoriasservice.findOne(idCat);
   }
   @Post()
-  create(@Body() payload: any) {
-    return {
-      message: 'acción de crear',
-      payload,
-    };
+  create(@Body() payload: CreateCategoriaDTO) {
+    return this.categoriasservice.create(payload);
   }
   @Put(':idCategoria')
   updateCategoria(
-    @Param('idCategoria') idCategoria: string,
-    @Body() body: any,
-  ): any {
-    return {
-      idCategoria: idCategoria,
-      nombre: body.nombre,
-    };
+    @Param('idCategoria') idCategoria: number,
+    @Body() payload: UpdateCategoriaDTO,
+  ) {
+    return this.categoriasservice.update(+idCategoria, payload);
   }
   @Delete(':idCategoria')
-  deleteProducto(@Param('idCategoria') idCategoria: string): any {
-    return {
-      idCategoria: idCategoria,
-      delete: true,
-      count: 1,
-    };
+  deleteProducto(@Param('idCategoria') idCategoria: number) {
+    return this.categoriasservice.remove(idCategoria);
   }
 }
