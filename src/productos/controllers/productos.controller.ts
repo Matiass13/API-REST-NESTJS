@@ -48,11 +48,7 @@ export class ProductosController {
     return this.productsService.update(+idProduct, payload);
   }
   @Delete(':idProducto')
-  deleteProducto(@Param('idProducto') idProducto: string): any {
-    return {
-      idProducto: idProducto,
-      delete: true,
-      count: 1,
-    };
+  deleteProducto(@Param('idProducto') idProducto: number) {
+    return this.productsService.remove(idProducto);
   }
 }

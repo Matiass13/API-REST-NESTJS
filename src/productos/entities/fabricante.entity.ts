@@ -2,9 +2,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Producto } from './producto.entity';
 
 @Entity()
 export class Fabricante {
@@ -21,7 +23,7 @@ export class Fabricante {
   email: string;
 
   @Column({ type: 'varchar' })
-  imagen: string;
+  image: string;
 
   @CreateDateColumn({
     type: 'timestamptz',
@@ -34,4 +36,7 @@ export class Fabricante {
     default: () => 'CURRENT_TIMESTAMP',
   })
   updatedAt: Date;
+
+  @OneToMany(() => Producto, (producto) => producto.fabricante)
+  productos: Producto[];
 }

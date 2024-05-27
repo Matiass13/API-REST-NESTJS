@@ -3,44 +3,55 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
+  ParseIntPipe,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
+import { FabricanteService } from '../services/fabricante.service';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  CreateFabricanteDTO,
+  UpdateFabricanteDTO,
+} from '../dtos/fabricante.dto';
 
-@Controller('fabricantes')
+@ApiTags('Fabricante')
+@Controller('Fabricante')
 export class FabricantesController {
+  constructor(private FabricantesService: FabricanteService) {}
   @Get()
-  getFabricantes(): string {
-    return 'Lista de fabricantes';
+  @ApiOperation({ summary: 'Catalogo con todos los Fabricante' })
+  getFabricantes(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    @Query('limit') _limit = 100,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    @Query('offset') _offset = 0,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    @Query('brand') _brand = '',
+  ) {
+    return this.FabricantesService.findAll();
   }
-  @Get(':id')
-  getUserById(@Param('id') id: string) {
-    return 'Fabricante with ID: ' + id;
+  @Get(':idFabricante')
+  @HttpCode(HttpStatus.ACCEPTED)
+  getFabricanteById(@Param('idFabricante', ParseIntPipe) idFabricante: number) {
+    return this.FabricantesService.findOne(idFabricante);
   }
   @Post()
-  create(@Body() payload: any) {
-    return {
-      message: 'acción de crear',
-      payload,
-    };
+  create(@Body() payload: CreateFabricanteDTO) {
+    return this.FabricantesService.create(payload);
   }
   @Put(':idFabricante')
   updateFabricante(
     @Param('idFabricante') idFabricante: string,
-    @Body() body: any,
-  ): any {
-    return {
-      idFabricante: idFabricante,
-      nombre: body.nombre,
-    };
+    @Body() payload: UpdateFabricanteDTO,
+  ) {
+    return this.FabricantesService.update(+idFabricante, payload);
   }
-  @Delete(':idFabricante')
-  deleteProducto(@Param('idFabricante') idFabricante: string): any {
-    return {
-      idFabricante: idFabricante,
-      delete: true,
-      count: 1,
-    };
+  @Delete(':idFabricanteo')
+  deleteFabricante(@Param('idFabricante') idFabricante: number) {
+    return this.FabricantesService.remove(idFabricante);
   }
 }

@@ -23,8 +23,8 @@ export class CompradoresService {
           role: 'role',
         },
       ]; */
-  findAll() {
-    return this.compradorRepo.find();
+  async findAll() {
+    return await this.compradorRepo.find();
   }
   async findOne(id: number) {
     const item = await this.compradorRepo.findOneBy({ id });

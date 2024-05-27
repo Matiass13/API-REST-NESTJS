@@ -3,7 +3,10 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
+  ParseIntPipe,
   //ParseIntPipe,
   Post,
   Put,
@@ -22,16 +25,21 @@ export class OperadoresController {
   getOrders(@Param('id', ParseIntPipe) id: number) {
     return this.operatorService.getOrderByUser(id);
   } */
+  @Get(':idOperator')
+  @HttpCode(HttpStatus.ACCEPTED)
+  getOperatorById(@Param('idOperator', ParseIntPipe) idOperator: number) {
+    return this.operatorService.findOne(idOperator);
+  }
   @Post()
   create(@Body() payload: CreateOperatorDTO) {
     return this.operatorService.create(payload);
   }
-  @Put(':idProduct')
-  updateProduct(
-    @Param('idProduct') idProduct: string,
+  @Put(':idOperator')
+  updateOperator(
+    @Param('idOperator') idOperator: string,
     @Body() payload: UpdateOperatorDTO,
   ) {
-    return this.operatorService.update(+idProduct, payload);
+    return this.operatorService.update(+idOperator, payload);
   }
   @Delete(':idoperator')
   deleteoperator(@Param('idoperator') idoperator: number) {
